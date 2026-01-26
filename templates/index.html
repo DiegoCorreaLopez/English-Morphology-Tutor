@@ -1,0 +1,965 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tutor Algebraico de Morfología</title>
+    <style>
+      :root {
+        --primary: #2e7d32; /* Verde bosque  */
+        --secondary: #66bb6a;
+        --bg: #fdfdfd;
+        --card-bg: #ffffff;
+        --text: #202124;
+      }
+
+      body {
+        font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        /* Degradado lineal sutil y profesional */
+        background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%);
+        background-attachment: fixed; /* Mantiene el fondo quieto al hacer scroll */
+        min-height: 100vh;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        line-height: 1.6;
+        color: #3c4043;
+      }
+
+      /* Contenedor principal con sombra suave */
+      .card {
+        background: white;
+        padding: 25px;
+        border-radius: 16px; /* Bordes más curvos y modernos */
+        margin-bottom: 25px;
+        /* Sombra multicapa para mayor realismo */
+        box-shadow:
+          0 4px 6px rgba(0, 0, 0, 0.05),
+          0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        border: 1px solid rgba(255, 255, 255, 0.3); /* Borde sutil brillante */
+      }
+
+      .card:hover {
+        /* Efecto de elevación al pasar el mouse */
+        transform: translateY(-4px);
+        box-shadow:
+          0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      /* Encabezados modernos */
+      h1 {
+        font-weight: 800;
+        letter-spacing: -1.5px;
+        color: #1a1c1e;
+      }
+
+      h2 {
+        font-weight: 600;
+        font-size: 1.25rem;
+        margin-bottom: 20px;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      /* Inputs y Botones con estilo moderno */
+      .input-group {
+        display: flex;
+        background: #f8f9fa;
+        padding: 8px;
+        border-radius: 12px;
+        border: 2px solid #eef0f2;
+        transition: all 0.3s ease;
+      }
+
+      .input-group:focus-within {
+        border-color: var(--secondary);
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.1);
+      }
+
+      input {
+        border: none;
+        background: transparent;
+        padding: 12px 15px;
+        outline: none;
+        font-size: 1rem;
+        flex: 1;
+      }
+
+      button {
+        padding: 12px 24px;
+        background-color: #1a73e8;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        /* Sombras sutiles para el efecto de resplandor profesional */
+        box-shadow: 0 4px 14px 0 rgba(26, 115, 232, 0.39);
+        transition: all 0.2s ease;
+        outline: none;
+      }
+
+      button:hover {
+        background-color: #1557b0;
+        /* Aumenta el resplandor al pasar el cursor */
+        box-shadow: 0 6px 20px rgba(21, 87, 176, 0.23);
+        transform: scale(1.02); /* Crece un 2% para dar feedback visual */
+      }
+
+      button:active {
+        transform: scale(0.98); /* Se hunde ligeramente al hacer clic */
+      }
+
+      button:disabled {
+        background-color: #ccc;
+        box-shadow: none;
+        cursor: not-allowed;
+      }
+
+      /* Feedback estilizado */
+      .feedback {
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 20px;
+        font-size: 0.95rem;
+        animation: fadeIn 0.4s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .fase-bloqueada {
+        filter: grayscale(1);
+        opacity: 0.4;
+        pointer-events: none;
+      }
+
+      /* Estilo del botón */
+      .btn-naranja-original {
+        background-color: #c371e4;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Tipografía Serif naranja */
+      .texto-verbo-serif {
+        font-family: "Georgia", serif;
+        font-size: 1.8rem;
+        color: #d35400;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      /* Botón de audio */
+      .btn-audio-minimal {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2rem;
+        display: none; /* Se activa por JS */
+        opacity: 0.6;
+        transition: opacity 0.3s;
+      }
+
+      .btn-audio-minimal:hover {
+        opacity: 1;
+      }
+
+      .card-reto {
+        background: #f6f3fb !important; /* violeta muy claro */
+        padding: 25px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+
+        box-shadow: 0 4px 12px rgba(107, 91, 149, 0.18);
+
+        border-top: 5px solid #beb1df !important; /* violeta principal */
+        border-left: 1px solid #d8d2e8;
+        border-right: 1px solid #d8d2e8;
+        border-bottom: 1px solid #d8d2e8;
+
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+
+      /* Efecto de movimiento al hacer click (Feedback táctil) */
+      .card-reto:active {
+        transform: scale(0.98); /* Se encoge un 2% */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* La sombra se reduce */
+        transition: transform 0.1s ease; /* Movimiento rápido para que se sienta real */
+      }
+
+      .card-reto:hover {
+        transform: translateY(-4px); /* Se eleva 4 píxeles */
+        box-shadow:
+          0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        border-color: rgba(
+          230,
+          180,
+          240,
+          0.5
+        ); /* El borde se ilumina un poco */
+      }
+    </style>
+  </head>
+  <body>
+    <div style="text-align: center; width: 100%; margin-bottom: 35px">
+      <h1
+        style="
+          margin: 0;
+          font-size: 2.8rem;
+          color: #1a73e8;
+          letter-spacing: -1px;
+          display: block;
+          text-align: center;
+        "
+      >
+        Morfolog-IA
+      </h1>
+
+      <h2
+        style="
+          margin: 5px 0 25px 0;
+          font-size: 1.3rem;
+          color: #5f6368;
+          border-bottom: none;
+          font-weight: normal;
+          display: block;
+          text-align: center;
+          width: 100%;
+        "
+      >
+        Asistente de Conjugación Verbal del Inglés
+      </h2>
+
+      <div
+        class="welcome-banner"
+        style="
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(232, 234, 237, 0.8);
+          border-radius: 20px;
+          padding: 25px;
+          max-width: 680px;
+          margin: 0 auto 40px auto;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+          transition: all 0.4s ease;
+          cursor: default;
+          text-align: center;
+        "
+      >
+        <p
+          style="
+            color: #3c4043;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin: 0;
+            font-family: &quot;Segoe UI&quot;, Tahoma, sans-serif;
+          "
+        >
+          Bienvenido al sistema de apoyo morfológico para la conjugación de
+          verbos en inglés.
+          <br />
+          Esta herramienta te guiará para comprender y analizar la estructura de
+          transformación verbal mediante un modelo de
+          <span class="accent-text">costo cognitivo</span>.
+        </p>
+      </div>
+
+      <style>
+        .welcome-banner:hover {
+          transform: translateY(-5px);
+          background: rgba(255, 255, 255, 0.9);
+          box-shadow: 0 15px 40px rgba(26, 115, 232, 0.1);
+          border-color: #1a73e8;
+        }
+
+        .accent-text {
+          color: #2e7d32;
+          font-weight: 600;
+          position: relative;
+          transition: all 0.3s ease;
+        }
+      </style>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr; gap: 20px">
+      <div
+        class="card"
+        style="
+          background: #e8f5e9;
+          color: #2e7d32;
+          border-left: 5px solid #66bb6a;
+        "
+      >
+        <h2
+          style="
+            color: #1b5e20;
+            border-bottom: 2px solid #a5d6a7;
+            font-size: 1.1rem;
+            margin-top: 0;
+            padding-bottom: 8px;
+          "
+        >
+          Respaldo Teórico: Lógica Algebraica
+        </h2>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+            font-family: &quot;Segoe UI&quot;, sans-serif;
+            font-size: 0.9rem;
+          "
+        >
+          <div
+            style="
+              background: rgba(255, 255, 255, 0.5);
+              padding: 10px;
+              border-radius: 8px;
+            "
+          >
+            <strong style="color: #2e7d32">(I-A) Identidad:</strong><br />
+            <span
+              style="
+                font-family: &quot;Courier New&quot;, monospace;
+                font-weight: bold;
+                font-size: 1rem;
+              "
+              >f(x) = x</span
+            ><br />
+            <small style="color: #022003"
+              >Efecto: El verbo entra al proceso y <br />
+              sale igual. Costo nulo.</small
+            >
+          </div>
+          <div
+            style="
+              background: rgba(255, 255, 255, 0.5);
+              padding: 10px;
+              border-radius: 8px;
+            "
+          >
+            <strong style="color: #2e7d32">(I-B) Sustitución:</strong><br />
+            <span
+              style="
+                font-family: &quot;Courier New&quot;, monospace;
+                font-weight: bold;
+                font-size: 1rem;
+              "
+              >f(x) = x'</span
+            ><br />
+            <small style="color: #022003"
+              >Efecto: Modificación interna definida (Se conserva parte del
+              verbo y se transforma la otra parte). Costo medio.</small
+            >
+          </div>
+          <div
+            style="
+              background: rgba(255, 255, 255, 0.5);
+              padding: 10px;
+              border-radius: 8px;
+            "
+          >
+            <strong style="color: #2e7d32">(I-C) Supleción:</strong><br />
+            <span
+              style="
+                font-family: &quot;Courier New&quot;, monospace;
+                font-weight: bold;
+                font-size: 1rem;
+              "
+              >f(x) = y</span
+            ><br />
+            <small style="color: #022003"
+              >Efecto: La raíz desaparece y es reemplazada. Costo alto.</small
+            >
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="card"
+        style="background: #fff3e0; border-top: 5px solid #ff9800"
+      >
+        <h2 style="margin-top: 0">Guía de Grupos Verbales</h2>
+        <p style="font-size: 0.85rem; margin-bottom: 15px">
+          Ejemplos prácticos de transformación (Infinitivo → Pasado →
+          Participio):
+        </p>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            font-size: 13px;
+          "
+        >
+          <div
+            style="
+              background: white;
+              padding: 12px;
+              border-radius: 8px;
+              border: 1px solid #ffcc80;
+            "
+          >
+            <strong style="color: green">Regular (R):</strong> Raíz + <b>ed</b>
+            <div style="margin-top: 5px; color: #666">
+              • Work → worked → worked
+            </div>
+            <div style="color: #666">• Play → played → played</div>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 12px;
+              border-radius: 8px;
+              border: 1px solid #ffcc80;
+            "
+          >
+            <strong style="color: #1a73e8">Identidad (I-A):</strong> Invariante
+            <div style="margin-top: 5px; color: #666">• Cut → cut → cut</div>
+            <div style="color: #666">• Hit → hit → hit</div>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 12px;
+              border-radius: 8px;
+              border: 1px solid #ffcc80;
+            "
+          >
+            <strong style="color: orange">Sustitución (I-B):</strong> Cambio
+            vocálico
+            <div style="margin-top: 5px; color: #666">• Sing → sang → sung</div>
+            <div style="color: #666">• Drink → drank → drunk</div>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 12px;
+              border-radius: 8px;
+              border: 1px solid #ffcc80;
+            "
+          >
+            <strong style="color: red">Supleción (I-C):</strong> Cambio de raíz
+            <div style="margin-top: 5px; color: #666">• Go → went → gone</div>
+            <div style="color: #666">• Be → was/were → been</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-reto">
+      <h3 style="margin-top: 0; color: #ff7b00">🎲 Generador de Reto</h3>
+      <p>Haz clic para obtener un verbo irregular al azar.</p>
+
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          margin-top: 20px;
+          flex-wrap: wrap;
+        "
+      >
+        <button onclick="generarVerboAleatorio()" class="btn-naranja-original">
+          Generar Verbo
+        </button>
+
+        <div style="display: flex; align-items: center; gap: 15px">
+          <div
+            id="cont-inf"
+            style="display: flex; align-items: center; gap: 8px"
+          >
+            <span id="verbo-generado" class="texto-verbo-serif">---</span>
+            <button
+              onclick="pronunciarCualquierVerbo('verbo-generado')"
+              id="btn-audio"
+              class="btn-audio-minimal"
+            >
+              🔊
+            </button>
+          </div>
+          <div
+            id="cont-pasado"
+            style="
+              display: none;
+              align-items: center;
+              gap: 8px;
+              border-left: 2px solid #ddd;
+              padding-left: 15px;
+            "
+          >
+            <span
+              id="verbo-pasado"
+              class="texto-verbo-serif"
+              style="color: #2e7d32"
+            ></span>
+            <button
+              onclick="pronunciarCualquierVerbo('verbo-pasado')"
+              class="btn-audio-minimal"
+              style="display: inline-block; opacity: 1"
+            >
+              🔊
+            </button>
+          </div>
+          <div
+            id="cont-part"
+            style="
+              display: none;
+              align-items: center;
+              gap: 8px;
+              border-left: 2px solid #ddd;
+              padding-left: 15px;
+            "
+          >
+            <span
+              id="verbo-participio"
+              class="texto-verbo-serif"
+              style="color: #1a73e8"
+            ></span>
+            <button
+              onclick="pronunciarCualquierVerbo('verbo-participio')"
+              class="btn-audio-minimal"
+              style="display: inline-block; opacity: 1"
+            >
+              🔊
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="seccion-fase1">
+      <h2>Paso 1: Consulta de Andamiaje</h2>
+      <p>
+        Ingresa un verbo en infinitivo para conocer su categoría algebraica:
+      </p>
+      <div class="input-group">
+        <input
+          type="text"
+          id="verboInfinitivo"
+          placeholder="Ej: buy, go, work"
+        />
+        <button onclick="ejecutarFase1()">Consultar Categoría</button>
+      </div>
+      <div id="res-fase1" class="feedback info"></div>
+    </div>
+
+    <div class="card fase-bloqueada" id="seccion-fase2">
+      <h2>Paso 2: Reto de Pasado Simple</h2>
+      <p>
+        Basándote en la categoría anterior, ¿cuál es el <b>Pasado Simple</b>?
+      </p>
+      <div class="input-group">
+        <input
+          type="text"
+          id="intentoPasado"
+          placeholder="Escribe tu respuesta"
+        />
+        <button onclick="validarReto('pasado simple')">Validar Pasado</button>
+      </div>
+      <div id="res-fase2" class="feedback"></div>
+    </div>
+
+    <div class="card fase-bloqueada" id="seccion-fase3">
+      <h2>Paso 3: Reto de Pasado Participio</h2>
+      <p>Ahora, intenta con el <b>Pasado Participio</b>:</p>
+      <div class="input-group">
+        <input
+          type="text"
+          id="intentoParticipio"
+          placeholder="Escribe tu respuesta"
+        />
+        <button onclick="validarReto('pasado participio')">
+          Validar Participio
+        </button>
+      </div>
+      <div id="res-fase3" class="feedback"></div>
+    </div>
+
+    <div style="text-align: center; margin: 30px 0 60px 0">
+      <button
+        onclick="reiniciar()"
+        style="background-color: #ff932e; padding: 12px 30px"
+      >
+        Reiniciar Todo el Ejercicio
+      </button>
+    </div>
+
+    <script>
+      let verboActual = "";
+
+      // CONEXIÓN PASO 1 ACTUALIZADA (ORGANIZACIÓN DE INFO)
+      async function ejecutarFase1() {
+        const inputVerbo = document.getElementById("verboInfinitivo");
+        verboActual = inputVerbo.value.trim().toLowerCase();
+
+        if (!verboActual) {
+          alert("Por favor, genera un verbo primero o escríbelo en el cuadro.");
+          return;
+        }
+
+        const resDiv = document.getElementById("res-fase1");
+        resDiv.style.display = "block";
+        resDiv.style.color = "#3c4043";
+        resDiv.innerHTML = "Analizando estructura algebraica...";
+
+        try {
+          const response = await fetch("/consultar_fase1", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ verbo: verboActual }),
+          });
+
+          if (!response.ok) throw new Error("Respuesta de red no ok");
+
+          const data = await response.json();
+
+          // RESPUESTA ORGANIZADA CON MEJOR ESTRUCTURA Y EJEMPLOS VERTICALES
+          let ejemplosHtml = "";
+          if (data.ejemplos && data.ejemplos.length > 0) {
+            ejemplosHtml = `<div style="margin-top:10px; border-top: 1px dashed #ccc; padding-top:10px;">`;
+            data.ejemplos.forEach((ej) => {
+              ejemplosHtml += `<p style="margin: 5px 0; font-size: 0.9rem;">💡 ${ej}</p>`;
+            });
+            ejemplosHtml += `</div>`;
+          }
+
+          resDiv.innerHTML = `
+            <div style="background: #e8f5e9; padding: 20px; border-radius: 12px; border: 1px solid #c5e1a5;">
+                <p style="margin: 0 0 10px 0;"><strong style="color: #2e7d32;">Categoría Algebraica:</strong> ${data.tipo_algoritmo}</p>
+                <p style="margin: 0 0 10px 0;"><strong>Análisis Morfológico:</strong> ${data.explicacion_didactica}</p>
+                <p style="margin: 0;"><strong>Contexto y Ejemplos (Presente):</strong></p>
+                ${ejemplosHtml}
+            </div>
+          `;
+
+          document
+            .getElementById("seccion-fase2")
+            .classList.remove("fase-bloqueada");
+        } catch (e) {
+          console.error("Detalle del error:", e);
+          resDiv.style.color = "#d32f2f";
+          resDiv.innerHTML =
+            "El tutor está saturado o se agotó el límite de intentos. Por favor, espera un minuto.";
+        }
+      }
+
+      // CONEXIÓN PASO 2 Y 3 ACTUALIZADA (ACTUALIZACIÓN DE GENERADOR)
+      async function validarReto(tiempo) {
+        if (!verboActual) {
+          verboActual = document
+            .getElementById("verboInfinitivo")
+            .value.trim()
+            .toLowerCase();
+        }
+
+        if (!verboActual) {
+          alert("Por favor, genera o escribe un verbo primero.");
+          return;
+        }
+
+        const inputId =
+          tiempo === "pasado simple" ? "intentoPasado" : "intentoParticipio";
+        const resId = tiempo === "pasado simple" ? "res-fase2" : "res-fase3";
+        const intento = document
+          .getElementById(inputId)
+          .value.trim()
+          .toLowerCase();
+        const resDiv = document.getElementById(resId);
+
+        resDiv.style.display = "block";
+        resDiv.innerHTML = "Validando...";
+
+        try {
+          const response = await fetch("/validar_reto", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              verbo: verboActual,
+              intento: intento,
+              tiempo: tiempo,
+            }),
+          });
+
+          if (!response.ok) throw new Error("Error en servidor");
+
+          const data = await response.json();
+          resDiv.className =
+            "feedback " + (data.es_correcto ? "success" : "error");
+          resDiv.style.color = data.es_correcto ? "#2e7d32" : "#d32f2f";
+          resDiv.style.background = data.es_correcto ? "#e8f5e9" : "#ffebee";
+
+          let contenidoHtml = `
+            <strong>${data.es_correcto ? "¡Correcto!" : "Pista del Tutor"}</strong><br>
+            ${data.explicacion_didactica}
+          `;
+
+          if (data.es_correcto && data.ejemplos && data.ejemplos.length > 0) {
+            contenidoHtml += `<div style="margin-top:10px; border-top: 1px dashed #ccc; padding-top:10px;">`;
+            data.ejemplos.forEach((ej) => {
+              contenidoHtml += `<p style="margin: 5px 0; font-size: 0.9rem;">💡 ${ej}</p>`;
+            });
+            contenidoHtml += `</div>`;
+          }
+
+          resDiv.innerHTML = contenidoHtml;
+
+          // LÓGICA PARA ACTUALIZAR EL GENERADOR DE RETO ARRIBA
+          if (data.es_correcto) {
+            if (tiempo === "pasado simple") {
+              document.getElementById("verbo-pasado").innerText =
+                intento.toUpperCase();
+              document.getElementById("cont-pasado").style.display = "flex";
+              document
+                .getElementById("seccion-fase3")
+                .classList.remove("fase-bloqueada");
+            } else if (tiempo === "pasado participio") {
+              document.getElementById("verbo-participio").innerText =
+                intento.toUpperCase();
+              document.getElementById("cont-part").style.display = "flex";
+            }
+          }
+        } catch (e) {
+          console.error(e);
+          resDiv.innerHTML = "Error al validar la respuesta.";
+          resDiv.style.color = "red";
+        }
+      }
+
+      // FUNCIÓN PARA GENERAR EL VERBO
+      function generarVerboAleatorio() {
+        const listaVerbos = [
+          "arise",
+          "awake",
+          "be",
+          "bear",
+          "beat",
+          "become",
+          "begin",
+          "bend",
+          "bet",
+          "bid",
+          "bind",
+          "bite",
+          "bleed",
+          "blow",
+          "break",
+          "breed",
+          "bring",
+          "broadcast",
+          "build",
+          "burn",
+          "burst",
+          "buy",
+          "cast",
+          "catch",
+          "choose",
+          "cling",
+          "come",
+          "cost",
+          "creep",
+          "cut",
+          "deal",
+          "dig",
+          "do",
+          "draw",
+          "dream",
+          "drink",
+          "drive",
+          "eat",
+          "fall",
+          "feed",
+          "feel",
+          "fight",
+          "find",
+          "fit",
+          "flee",
+          "fling",
+          "fly",
+          "forbid",
+          "forecast",
+          "forget",
+          "forgive",
+          "forsake",
+          "freeze",
+          "get",
+          "give",
+          "go",
+          "grind",
+          "grow",
+          "hang",
+          "have",
+          "hear",
+          "hide",
+          "hit",
+          "hold",
+          "hurt",
+          "keep",
+          "kneel",
+          "know",
+          "lay",
+          "lead",
+          "lean",
+          "leap",
+          "learn",
+          "leave",
+          "lend",
+          "let",
+          "lie",
+          "light",
+          "lose",
+          "make",
+          "mean",
+          "meet",
+          "mislay",
+          "mistake",
+          "pay",
+          "prove",
+          "put",
+          "quit",
+          "read",
+          "rid",
+          "ride",
+          "ring",
+          "rise",
+          "run",
+          "say",
+          "see",
+          "seek",
+          "sell",
+          "send",
+          "set",
+          "shake",
+          "shed",
+          "shine",
+          "shoot",
+          "show",
+          "shrink",
+          "shut",
+          "sing",
+          "sink",
+          "sit",
+          "sleep",
+          "slide",
+          "slit",
+          "smell",
+          "sneak",
+          "speak",
+          "speed",
+          "spell",
+          "spend",
+          "spill",
+          "spin",
+          "spit",
+          "split",
+          "spoil",
+          "spread",
+          "spring",
+          "stand",
+          "steal",
+          "stick",
+          "sting",
+          "stink",
+          "strike",
+          "strive",
+          "string",
+          "swear",
+          "sweep",
+          "swell",
+          "swim",
+          "swing",
+          "take",
+          "teach",
+          "tear",
+          "tell",
+          "think",
+          "throw",
+          "thrust",
+          "understand",
+          "undertake",
+          "upset",
+          "wake",
+          "wear",
+          "weave",
+          "weep",
+          "win",
+          "wind",
+          "withdraw",
+          "write",
+        ];
+        const indice = Math.floor(Math.random() * listaVerbos.length);
+        const verbo = listaVerbos[indice];
+
+        verboActual = verbo;
+        document.getElementById("verbo-generado").innerText =
+          verbo.toUpperCase();
+        document.getElementById("verboInfinitivo").value = verbo;
+        document.getElementById("btn-audio").style.display = "inline-block";
+      }
+
+      // FUNCIÓN DE AUDIO FLEXIBLE
+      function pronunciarCualquierVerbo(idElemento) {
+        const texto = document.getElementById(idElemento).innerText;
+        if (texto && texto !== "---") {
+          const mensaje = new SpeechSynthesisUtterance(texto);
+          mensaje.lang = "en-US";
+          mensaje.rate = 0.8;
+          window.speechSynthesis.speak(mensaje);
+        }
+      }
+
+      // REINICIAR (ACTUALIZADO PARA LIMPIAR TODO)
+      function reiniciar() {
+        document.getElementById("verboInfinitivo").value = "";
+        document.getElementById("intentoPasado").value = "";
+        document.getElementById("intentoParticipio").value = "";
+
+        document.getElementById("verbo-generado").innerText = "---";
+        document.getElementById("verbo-pasado").innerText = "";
+        document.getElementById("verbo-participio").innerText = "";
+
+        document.getElementById("btn-audio").style.display = "none";
+        document.getElementById("cont-pasado").style.display = "none";
+        document.getElementById("cont-part").style.display = "none";
+
+        document.querySelectorAll(".feedback").forEach((f) => {
+          f.style.display = "none";
+          f.innerHTML = "";
+        });
+
+        document
+          .getElementById("seccion-fase2")
+          .classList.add("fase-bloqueada");
+        document
+          .getElementById("seccion-fase3")
+          .classList.add("fase-bloqueada");
+
+        verboActual = "";
+      }
+    </script>
+  </body>
+</html>
