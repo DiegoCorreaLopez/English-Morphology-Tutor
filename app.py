@@ -2,12 +2,12 @@ import os
 import csv
 import json
 from datetime import datetime
-from dotenv import load_dotenv # Nueva importación para seguridad
-from google import genai # Nueva librería moderna de Google
+from dotenv import load_dotenv 
+from google import genai 
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 
-# Cargar variables de entorno desde el archivo .env
+# Cargar variables de entorno
 load_dotenv()
 
 app = Flask(__name__)
@@ -15,10 +15,11 @@ CORS(app)
 
 # --- CONFIGURACIÓN DE GEMINI SEGURA ---
 api_key = os.getenv("GOOGLE_API_KEY")
+# Usamos el cliente estándar para máxima compatibilidad con modelos experimentales
 client = genai.Client(api_key=api_key)
 
 system_instruction = """
-Eres 'Morfolog-IA', un asistente experto en morfología verba, aunque estás basado en un modelo algebraico de costo cognitivo no usarás explicaciones que involucren detalles del costo cognitivo.
+Eres 'Morfolog-IA', un asistente experto en morfología verbal, aunque estás basado en un modelo algebraico de costo cognitivo no usarás explicaciones que involucren detalles del costo cognitivo.
 Tu tono es académico, motivador y personalizado. Sin embargo, ten en cuenta que estás contestando a estudiantes de secundaria por lo que tus respuesta deben ser comprensibles y didácticas para un estudiante de tal nivel. 
 
 REGLAS PEDAGÓGICAS ESTRICTAS:
@@ -59,16 +60,20 @@ def consultar_fase1():
     data = request.json
     verbo = data.get('verbo', '').strip().lower()
     
-    # Uso del nuevo cliente con la instrucción de sistema integrada
-    response = client.models.generate_content(
-        model="gemini-1.5-flash",
-        config=genai.types.GenerateContentConfig(
-            system_instruction=system_instruction,
-            temperature=0.1
-        ),
-        contents=f"Fase 1: Analiza el infinitivo '{verbo}'. No conjugues."
-    )
-    return procesar_y_guardar(verbo, "Consulta_Andamiaje", response.text)
+    try:
+        response = client.models.generate_content(
+            model="gemini-flash-latest", 
+            config={
+                'system_instruction': system_instruction,
+                'temperature': 0.1
+            },
+            contents=f"Fase 1: Analiza el infinitivo '{verbo}'. No conjugues."
+        )
+        return procesar_y_guardar(verbo, "Consulta_Andamiaje", response.text)
+    
+    except Exception as e:
+        print(f"Error de API: {e}")
+        return jsonify({"error": "Límite de cuota alcanzado", "detalle": "Espera 60 segundos antes de reintentar."}), 429
 
 @app.route('/validar_reto', methods=['POST'])
 def validar_reto():
@@ -83,15 +88,20 @@ def validar_reto():
         f"dentro del campo 'ejemplos' del JSON."
     )
     
-    response = client.models.generate_content(
-        model="gemini-1.5-flash",
-        config=genai.types.GenerateContentConfig(
-            system_instruction=system_instruction,
-            temperature=0.1
-        ),
-        contents=prompt
-    )
-    return procesar_y_guardar(verbo, f"Reto_{tiempo}", response.text, intento)
+    try:
+        response = client.models.generate_content(
+            model="gemini-flash-latest",
+            config={
+                'system_instruction': system_instruction,
+                'temperature': 0.1
+            },
+            contents=prompt
+        )
+        return procesar_y_guardar(verbo, f"Reto_{tiempo}", response.text, intento)
+    
+    except Exception as e:
+        print(f"Error de API: {e}")
+        return jsonify({"error": "Límite de cuota alcanzado", "detalle": "Espera 60 segundos antes de reintentar."}), 429
 
 def procesar_y_guardar(verbo, fase, texto_raw, intento="N/A"):
     try:
